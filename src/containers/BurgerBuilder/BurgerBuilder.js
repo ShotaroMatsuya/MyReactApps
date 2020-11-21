@@ -36,7 +36,7 @@ class BurgerBuilder extends Component{
                 this.setState({error:true});
             });
     }
-    updatePurchaseState(ingredients){
+    updatePurchaseState(ingredients){//order-btnのactivate
 
         const sum = Object.keys(ingredients).map(igKey=>{
             return ingredients[igKey];
@@ -45,7 +45,7 @@ class BurgerBuilder extends Component{
         },0);
         this.setState({purchasable:sum > 0});
     }
-    addIngredientHandler=(type)=>{
+    addIngredientHandler=(type)=>{//incrementボタン
         const oldCount = this.state.ingredients[type];
         const updatedCount = oldCount + 1;
         const updatedIngredients ={
@@ -59,7 +59,7 @@ class BurgerBuilder extends Component{
         this.updatePurchaseState(updatedIngredients);//updateされたばかりのstateを反映させるために引数で渡す必要がある
 
     }
-    removeIngredientHandler=(type)=>{
+    removeIngredientHandler=(type)=>{//decrementボタン
         const oldCount = this.state.ingredients[type];
         if(oldCount<=0){
             return ;
@@ -82,37 +82,27 @@ class BurgerBuilder extends Component{
     //     //その場合にはarrow-functionで書けばOK
     //     this.setState({purchasing:true});
     // }
-    purchaseHandler=()=>{
+    purchaseHandler=()=>{//modal表示
         this.setState({purchasing:true});
     }
-    purchaseCancelHandler=()=>{
+    purchaseCancelHandler=()=>{//modal非表示
         this.setState({purchasing:false});
     }
-    purchaseContinueHandler=()=>{
+    purchaseContinueHandler=()=>{//orderページへingredients情報を渡しredirect
         //alert('You continue!');
-        //ダミーオーダーデータの作成
-        this.setState({loading:true});
-        const order = {
-            ingredients:this.state.ingredients,
-            price:this.state.totalPrice,
-            customer:{
-                name:'Shotaro Matsuya',
-                address:{
-                    street:'Teststreet 1',
-                    zipCode:'323432',
-                    country:'Japan'
-                },
-                email:'test@test.com'
-            },
-            deliveryMethod:'fastest'
+        
+        //今回はpropsではなく、URLクエリパラメータで情報を受け渡してみる
+        const queryParams = [];
+        for(let i in this.state.ingredients){//ingredientsはObject
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
         }
-        axios.post('orders.json',order)
-            .then(response=>{
-                this.setState({loading:false,purchasing:false});
-            })
-            .catch(error =>{
-                this.setState({loading:false,purchasing:false});
-            });
+        //totalPriceをcontactDataまで渡す必要がある
+        queryParams.push('price='+ this.state.totalPrice);
+        const queryString = queryParams.join('&');//URLクエリパラメータの作成
+        this.props.history.push({
+            pathname:'/checkout',
+            search:'?'+ queryString
+        });
 
     }
     render(){

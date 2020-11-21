@@ -4,8 +4,9 @@ import NavigationItem from './NavigationItem/NavigationItem';
 
 const navigationItems =(props)=>(
     <ul className={classes.NavigationItems}>
-       <NavigationItem link="/" active>Burger Builder</NavigationItem>
-       <NavigationItem link="/">Checkout</NavigationItem>
+        {/* exact propsを渡すことでactiveクラスが常に追加されないようにする */}
+       <NavigationItem link="/" exact>Burger Builder</NavigationItem>
+       <NavigationItem link="/orders">Orders</NavigationItem>
     </ul>
 );
 
