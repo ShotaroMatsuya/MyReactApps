@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import {connect} from 'react-redux';
 
 import Aux from '../../hoc/Aux/Aux';
 import Burger from '../../components/Burger/Burger';
@@ -8,33 +9,26 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import * as actionTypes from '../../store/actions';
 
-// global constantsなので大文字
-const INGREDIENT_PRICES ={
-    salad:0.5,
-    cheese:0.4,
-    meat:1.3,
-    bacon:0.7
-};
+
 class BurgerBuilder extends Component{
 
     state = {
-        ingredients:null,
-        totalPrice:4,//base price
-        purchasable:false,//Orderボタンの表示
+        // purchasable:false,//Orderボタンの表示
         purchasing:false,//modalの表示
         loading:false,//spinnerの表示
         error:false//error時のspinner表示
     };
   
     componentDidMount(){
-        axios.get('https://react-my-burger-db68a.firebaseio.com/ingredients.json')
-            .then(response=>{
-                this.setState({ingredients:response.data});
-            })
-            .catch(err =>{
-                this.setState({error:true});
-            });
+        // axios.get('https://react-my-burger-db68a.firebaseio.com/ingredients.json')
+        //     .then(response=>{
+        //         this.setState({ingredients:response.data});
+        //     })
+        //     .catch(err =>{
+        //         this.setState({error:true});
+        //     });
     }
     updatePurchaseState(ingredients){//order-btnのactivate
 
@@ -43,40 +37,41 @@ class BurgerBuilder extends Component{
         }).reduce((sum,el)=>{ //個数を全部足す(返り値はarrayではなくinteger)
             return sum + el;
         },0);
-        this.setState({purchasable:sum > 0});
+        return sum > 0;
+        // this.setState({purchasable:sum > 0});
     }
-    addIngredientHandler=(type)=>{//incrementボタン
-        const oldCount = this.state.ingredients[type];
-        const updatedCount = oldCount + 1;
-        const updatedIngredients ={
-            ...this.state.ingredients
-        };
-        updatedIngredients[type] = updatedCount;
-        const priceAddition = INGREDIENT_PRICES[type];
-        const oldPrice = this.state.totalPrice;
-        const newPrice = oldPrice + priceAddition;
-        this.setState({totalPrice:newPrice,ingredients:updatedIngredients});
-        this.updatePurchaseState(updatedIngredients);//updateされたばかりのstateを反映させるために引数で渡す必要がある
+    // addIngredientHandler=(type)=>{//incrementボタン
+    //     const oldCount = this.state.ingredients[type];
+    //     const updatedCount = oldCount + 1;
+    //     const updatedIngredients ={
+    //         ...this.state.ingredients
+    //     };
+    //     updatedIngredients[type] = updatedCount;
+    //     const priceAddition = INGREDIENT_PRICES[type];
+    //     const oldPrice = this.state.totalPrice;
+    //     const newPrice = oldPrice + priceAddition;
+    //     this.setState({totalPrice:newPrice,ingredients:updatedIngredients});
+    //     this.updatePurchaseState(updatedIngredients);//updateされたばかりのstateを反映させるために引数で渡す必要がある
 
-    }
-    removeIngredientHandler=(type)=>{//decrementボタン
-        const oldCount = this.state.ingredients[type];
-        if(oldCount<=0){
-            return ;
+    // }
+    // removeIngredientHandler=(type)=>{//decrementボタン
+    //     const oldCount = this.state.ingredients[type];
+    //     if(oldCount<=0){
+    //         return ;
 
-        }
-        const updatedCount = oldCount - 1;
-        const updatedIngredients ={
-            ...this.state.ingredients
-        };
-        updatedIngredients[type] = updatedCount;
-        const priceDeduction = INGREDIENT_PRICES[type];
-        const oldPrice = this.state.totalPrice;
-        const newPrice = oldPrice - priceDeduction;
-        this.setState({totalPrice:newPrice,ingredients:updatedIngredients});
-        this.updatePurchaseState(updatedIngredients);//updateされたばかりのstateを反映させるために引数で渡す必要がある
+    //     }
+    //     const updatedCount = oldCount - 1;
+    //     const updatedIngredients ={
+    //         ...this.state.ingredients
+    //     };
+    //     updatedIngredients[type] = updatedCount;
+    //     const priceDeduction = INGREDIENT_PRICES[type];
+    //     const oldPrice = this.state.totalPrice;
+    //     const newPrice = oldPrice - priceDeduction;
+    //     this.setState({totalPrice:newPrice,ingredients:updatedIngredients});
+    //     this.updatePurchaseState(updatedIngredients);//updateされたばかりのstateを反映させるために引数で渡す必要がある
 
-    }
+    // }
     // purchaseHandler(){
     //     //eventHandlerにてthisを使うときはthisがインスタンスを指し示さないことがある。
     //     //その場合にはarrow-functionで書けばOK
@@ -89,25 +84,28 @@ class BurgerBuilder extends Component{
         this.setState({purchasing:false});
     }
     purchaseContinueHandler=()=>{//orderページへingredients情報を渡しredirect
-        //alert('You continue!');
+        // //alert('You continue!');
         
-        //今回はpropsではなく、URLクエリパラメータで情報を受け渡してみる
-        const queryParams = [];
-        for(let i in this.state.ingredients){//ingredientsはObject
-            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
-        }
-        //totalPriceをcontactDataまで渡す必要がある
-        queryParams.push('price='+ this.state.totalPrice);
-        const queryString = queryParams.join('&');//URLクエリパラメータの作成
-        this.props.history.push({
-            pathname:'/checkout',
-            search:'?'+ queryString
-        });
+        // //今回はpropsではなく、URLクエリパラメータで情報を受け渡してみる
+        // const queryParams = [];
+        // for(let i in this.state.ingredients){//ingredientsはObject
+        //     queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
+        // }
+        // //totalPriceをcontactDataまで渡す必要がある
+        // queryParams.push('price='+ this.state.totalPrice);
+        // const queryString = queryParams.join('&');//URLクエリパラメータの作成
+        // this.props.history.push({
+        //     pathname:'/checkout',
+        //     search:'?'+ queryString
+        // });
+
+        //reduxで受け渡すのでquery-parameterを使用する必要がなくなった
+        this.props.history.push('/checkout');
 
     }
     render(){
         const disabledInfo ={
-            ...this.state.ingredients
+            ...this.props.ings
         };
         for(let key in disabledInfo){
             disabledInfo[key] = disabledInfo[key] <=0;
@@ -116,21 +114,21 @@ class BurgerBuilder extends Component{
         let orderSummary = null;
     
         let burger = this.state.error ? <p>Ingredients can't be loaded!</p> :<Spinner />;
-        if(this.state.ingredients){
+        if(this.props.ings){
             burger = (
             <Aux>
-                <Burger ingredients={this.state.ingredients} />
+                <Burger ingredients={this.props.ings} />
                 <BurgerControls 
-                    ingredientAdded={this.addIngredientHandler}
-                    ingredientRemoved={this.removeIngredientHandler}
+                    ingredientAdded={this.props.onIngredientAdded}
+                    ingredientRemoved={this.props.onIngredientRemoved}
                     disabled={disabledInfo}
-                    purchasable={this.state.purchasable}
+                    purchasable={this.updatePurchaseState(this.props.ings)}//renderingされるたびに実行される
                     ordered={this.purchaseHandler}
-                    price={this.state.totalPrice}/>
+                    price={this.props.price}/>
             </Aux>);
             orderSummary = <OrderSummary 
-                ingredients={this.state.ingredients}
-                price={this.state.totalPrice}
+                ingredients={this.props.ings}
+                price={this.props.price}
                 purchaseCanceled={this.purchaseCancelHandler}
                 purchaseContinued={this.purchaseContinueHandler}
             />;
@@ -149,5 +147,24 @@ class BurgerBuilder extends Component{
         );
     }
 }
+const mapStateToProps = state => {
+    return {
+        ings:state.ingredients,
+        price:state.totalPrice
+    };
+}
 
-export default withErrorHandler(BurgerBuilder,axios);
+const mapDispatchToProps = dispatch =>{
+    return {
+        onIngredientAdded: (ingName)=>dispatch({
+                type:actionTypes.ADD_INGREDIENT,
+                ingredientName:ingName
+            }),
+        onIngredientRemoved: (ingName)=>dispatch({
+                type:actionTypes.REMOVE_INGREDIENT,
+                ingredientName:ingName
+            }),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder,axios));
