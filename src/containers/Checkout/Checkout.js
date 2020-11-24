@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Route} from 'react-router-dom';
+import {Route,Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
@@ -31,28 +31,33 @@ class Checkout extends Component{
     }
 
     render(){
-        return(
-            <div>
-                <CheckoutSummary 
-                    ingredients={this.props.ings}
-                    checkoutCancelled={this.checkoutCancelledHandler}
-                    checkoutContinued={this.checkoutContinuedHandler} />
-                    {/* ↓これだとpropsをContactDataコンポーネントに渡せない */}
-                    {/* <Route path={this.props.match.path + '/contact-data'} component={ContactData} /> */}
+        let summary = <Redirect to="/" />;
+        if(this.props.ings){
+            summary =(
+                <div>
+                    <CheckoutSummary 
+                        ingredients={this.props.ings}
+                        checkoutCancelled={this.checkoutCancelledHandler}
+                        checkoutContinued={this.checkoutContinuedHandler} />
+                        {/* ↓これだとpropsをContactDataコンポーネントに渡せない */}
+                        {/* <Route path={this.props.match.path + '/contact-data'} component={ContactData} /> */}
                     <Route 
                         path={this.props.match.path + '/contact-data'} 
                         // render={(props)=>(<ContactData ingredients={this.props.ings} price={this.state.totalPrice} {...props}/>)}
                         component={ContactData}//reduxでstate管理しているのでpropsで渡す必要なし
-                         />
+                            />
                         {/* Routeのhistoryオブジェクト使用するためpropsを引き継ぐ */}
-            </div>
-        );
+
+                </div>
+            );
+        }
+        return summary;
     }
 }
 
 const mapStateToProps = state =>{
     return {
-        ings:state.ingredients
+        ings:state.burgerBuilder.ingredients
     };
 }
 
