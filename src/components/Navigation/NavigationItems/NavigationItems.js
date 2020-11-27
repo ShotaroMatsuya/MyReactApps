@@ -7,6 +7,7 @@ const navigationItems =(props)=>(
         {/* exact propsを渡すことでactiveクラスが常に追加されないようにする */}
        <NavigationItem link="/" exact>Burger Builder</NavigationItem>
        <NavigationItem link="/orders">Orders</NavigationItem>
+       <NavigationItem link="/auth">Auth</NavigationItem>
     </ul>
 );
 
