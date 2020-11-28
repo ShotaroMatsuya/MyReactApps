@@ -4,7 +4,7 @@ import classes from './Burger.css';
 import BurgerIngredient from './BurgerIngredient/BurgerIngredient';
 
 const burger = (props)=>{
-    console.log(props);
+
     //1.Object.keys()メソッドでオブジェクトのキーのみを取得しarrayに変換
     //2.Array()メソッドは引数に指定した数字だけarray内に要素(undefined)を作る
     //3.reduce()メソッド内のコールバックには第一引数に処理されたあとの配列要素、第２引数に現在処理する配列要素が渡る。第２引数にはinitial valueをセット
@@ -17,7 +17,6 @@ const burger = (props)=>{
     .reduce((arr,el)=>{
         return arr.concat(el);
     },[]);
-    console.log(transformedIngredients);
     if(transformedIngredients.length === 0){
         transformedIngredients =<p>Please start adding ingredients!</p>;
     }

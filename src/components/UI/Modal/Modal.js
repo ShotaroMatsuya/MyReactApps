@@ -7,9 +7,6 @@ class Modal extends Component{
     shouldComponentUpdate(nextProps,nextState){//Modalがprops.showがtrueのとき,or modalの内容に変更があたとき
         return nextProps.show !== this.props.show||nextProps.children !== this.props.children;
     }
-    componentDIdUpdate(){
-        console.log('[Modal] Did Update');
-    }
     render(){
         return(
             <Aux>

@@ -29,7 +29,6 @@ export const purchaseBurger = (orderData,token) =>{//asyncコードの実行時�
         dispatch(purchaseBurgerStart());
         axios.post('/orders.json?auth='+ token,orderData)//orderDataはobject
             .then(response=>{
-                console.log(response);
                 dispatch(purchaseBurgerSuccess(response.data.name,orderData));//response.data.nameにidが渡っている
             })
             .catch(error =>{
@@ -70,7 +69,7 @@ export const fetchOrders = (token,userId) =>{
         const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId +'"';
             axios.get('/orders.json' + queryParams)
                 .then(res=>{
-                    console.log(res.data);//firebaseからはobjectが帰ってくるのでarrayに変換する必要がある
+                    // console.log(res.data);//firebaseからはobjectが帰ってくるのでarrayに変換する必要がある
                     const fetchedOrders =[];
                     for(let key in res.data){
                         fetchedOrders.push({
