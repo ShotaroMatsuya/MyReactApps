@@ -4,10 +4,11 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../utility';
 
 const initialState ={
-    token:null,
+    token:null,//auth check by firebase
     userId:null,
     error:null,
-    loading:false
+    loading:false,
+    authRedirectPath:'/',//auth後のredirect先
 };
 
 const authStart = (state,action) =>{
@@ -15,9 +16,9 @@ const authStart = (state,action) =>{
 };
 const authSuccess = (state,action) =>{
     return updateObject(state,{
-            token:action.idToken,
-            userId:action.userId,
-            error:null,
+            token:action.idToken,//from firebase
+            userId:action.userId,//from firebase
+            error:null,//from firebase
             loading:false
         });
 };
@@ -33,6 +34,10 @@ const authLogout = (state,action) =>{
     return updateObject(state,{token : null, userId : null});
 };
 
+const setAuthRedirectPath = (state,action) =>{
+    return updateObject(state,{authRedirectPath:action.path});
+};
+
 const reducer = (state = initialState , action) =>{
     switch(action.type){
         case actionTypes.AUTH_START:
@@ -43,6 +48,8 @@ const reducer = (state = initialState , action) =>{
             return authFail(state,action);
         case actionTypes.AUTH_LOGOUT:
             return authLogout(state,action);
+        case actionTypes.SET_AUTH_REDIRECT_PATH:
+            return setAuthRedirectPath(state,action);
         default :
             return state;
 

@@ -1,3 +1,4 @@
+//export action-creator
 export {
     addIngredient,
     removeIngredient,
@@ -9,5 +10,8 @@ export {
     fetchOrders
 } from './order';
 export {
-    auth
+    auth,
+    logout,
+    setAuthRedirectPath,
+    authCheckState
 } from './auth';

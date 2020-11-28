@@ -24,10 +24,10 @@ export const purchaseBurgerStart = () =>{//loadingの開始
     };
 };
 
-export const purchaseBurger = (orderData) =>{//asyncコードの実行時はfunctionをreturn
+export const purchaseBurger = (orderData,token) =>{//asyncコードの実行時はfunctionをreturn
     return dispatch =>{
         dispatch(purchaseBurgerStart());
-        axios.post('/orders.json',orderData)//orderDataはobject
+        axios.post('/orders.json?auth='+ token,orderData)//orderDataはobject
             .then(response=>{
                 console.log(response);
                 dispatch(purchaseBurgerSuccess(response.data.name,orderData));//response.data.nameにidが渡っている
@@ -64,10 +64,11 @@ export const fetchOrdersStart = () =>{
     };
 };
 
-export const fetchOrders = () =>{
+export const fetchOrders = (token,userId) =>{
     return dispatch =>{
         dispatch(fetchOrdersStart());
-            axios.get('/orders.json')
+        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId +'"';
+            axios.get('/orders.json' + queryParams)
                 .then(res=>{
                     console.log(res.data);//firebaseからはobjectが帰ってくるのでarrayに変換する必要がある
                     const fetchedOrders =[];
