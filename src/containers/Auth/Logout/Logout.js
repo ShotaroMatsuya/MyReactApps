@@ -7,9 +7,10 @@ const logout = props => {
   // componentDidMount(){
   //     this.props.onLogout();
   // }
+  const { onLogout } = props;
   useEffect(() => {
-    props.onLogout();
-  }, []);
+    onLogout();
+  }, [onLogout]);
 
   return <Redirect to="/" />;
 };

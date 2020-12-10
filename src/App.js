@@ -28,9 +28,10 @@ const app = props => {
   // componentDidMount(){
   //   this.props.onTryAutoSignup();
   // }
+  const { onTryAutoSignup } = props;
   useEffect(() => {
-    props.onTryAutoSignup();
-  }, []);
+    onTryAutoSignup();
+  }, [onTryAutoSignup]);
 
   let routes = (
     //rrdのpropsをComponentに受け渡す必要がある

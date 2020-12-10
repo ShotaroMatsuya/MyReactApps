@@ -10,9 +10,10 @@ const orders = props => {
   // componentDidMount(){
   //     this.props.onFetchOrders(this.props.token,this.props.userId);
   // }
+  const { onFetchOrders } = props;
   useEffect(() => {
-    props.onFetchOrders(props.token, props.userId);
-  }, []);
+    onFetchOrders(props.token, props.userId);
+  }, [onFetchOrders]);
 
   let orders = <Spinner />;
   if (!props.loading) {
